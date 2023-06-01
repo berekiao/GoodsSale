@@ -19,7 +19,7 @@ function ViewsGoods(){
         })
     }, [] )
 
-    const deleteCategory = (e, id) => {
+    const deleteGood = (e, id) => {
         e.preventDefault();
 
         const thisClicked = e.currentTarget;
@@ -40,6 +40,8 @@ function ViewsGoods(){
 
     }
 
+    if (localStorage.getItem('auth_role') == 'seller') {
+
     var viewgood_HTMLTABLE = "";
     {
         viewgood_HTMLTABLE = 
@@ -52,11 +54,12 @@ function ViewsGoods(){
                     <td>{item.category.name}</td>
                     <td>{item.price}$</td>
                     <td>{item.description}</td>
-                    <td>
-                        <Link to={`/dashboardSeller/edit-goods/${item.id}`} className="btn btn-success btn-sm">Edit</Link>
+                    <td><img src={`http://127.0.0.1:8000/${item.image}`} width="50px" /></td>
+                    <td className="add-button">
+                        <Link to={`/admin/dashboardSeller/edit-goods/${item.id}`}>Edit</Link>
                     </td>
                     <td>
-                        <button type="button" onClick={(e) => deleteCategory(e, item.id)}  className="btn btn-danger btn-sm">Delete</button>
+                        <button type="button" onClick={(e) => deleteGood(e, item.id)}>Delete</button>
                     </td>
                 </tr>
 
@@ -65,34 +68,36 @@ function ViewsGoods(){
     }   
 
     return(
-        <div className="container px-4">
-            <div className="card">
-                <div className="card-header">
-                    <h4>Your Goods
-                        <Link to='/dashboardSeller/add-goods' className="btn btn-primary btn-sm float-end">Add Goods</Link>
-                    </h4>
-                </div>
-                <div className="card-body">
-                    <table className="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Description</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {viewgood_HTMLTABLE}
-                        </tbody>
-                    </table>
-                </div>
+        <div>
+            <div className="add-button">
+                <Link to='/admin/dashboardSeller/add-goods'>Add Goods</Link>
             </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {viewgood_HTMLTABLE}
+                </tbody>
+            </table>
+
         </div>
     )
+    } 
+    return(
+        <div>
+            You do not have permissions for this page
+        </div>
+    ) 
 }
 
 export default ViewsGoods

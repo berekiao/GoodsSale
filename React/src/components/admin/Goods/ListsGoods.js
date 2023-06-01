@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
+import swal from "sweetalert"
 
 
-function ListGoods(){
+function ViewsGoods(){
 
     const [viewGood, setGood] = useState([])
 
@@ -18,6 +19,10 @@ function ListGoods(){
         })
     }, [] )
 
+    
+
+    if (localStorage.getItem('auth_role') == 'moderator') {
+
     var viewgood_HTMLTABLE = "";
     {
         viewgood_HTMLTABLE = 
@@ -26,16 +31,13 @@ function ListGoods(){
             return(
                 <tr key={item.id}>
                     <td>#</td>
-                    <td>{item.user.name}</td>
                     <td>{item.name}</td>
+                    <td>{item.category.name}</td>
+                    <td>{item.price}$</td>
                     <td>{item.description}</td>
-                    <td>{item.status}</td>
-                    <td>{item.approval}</td>
-                    
-                    <td>
-                        
-                        <Link to={`/admin/edit-goods/${item.id}`} className="btn btn-secondary btn-sm">Configure</Link>
-                        
+                    <td><img src={`http://127.0.0.1:8000/${item.image}`} width="50px" /></td>
+                    <td className="add-button">
+                        <Link to={`/admin/edit-goods/${item.id}`} className="btn btn-secondary btn-sm">Configure</Link>                    
                     </td>
                 </tr>
 
@@ -44,33 +46,32 @@ function ListGoods(){
     }   
 
     return(
-        <div className="container px-4">
-            <div className="card">
-                <div className="card-header">
-                    <h4>Total Request Post Goods
-                    </h4>
-                </div>
-                <div className="card-body">
-                    <table className="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Seller Name</th>
-                                <th>Good Name</th>
-                                <th>Description</th>
-                                <th>Posted</th>
-                                <th>Validation</th>
-                                <th>Request</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {viewgood_HTMLTABLE}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {viewgood_HTMLTABLE}
+                </tbody>
+            </table>
+
         </div>
     )
+    } 
+    return(
+        <div>
+            You do not have permissions for this page
+        </div>
+    ) 
 }
 
-export default ListGoods
+export default ViewsGoods

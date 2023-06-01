@@ -6,6 +6,7 @@ use App\Models\Good;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class GoodController extends Controller
@@ -101,50 +102,50 @@ class GoodController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name'=>'required|max:100',
             'category_id'=>'required',
             'price'=>'required',
             'description'=>'required',
-            //'image'=>'required|image|mimes:jpeg,png,jpg|max:2048',
+            'status'=>'nullable',
+            'approval'=>'nullable'
         ]);
 
-        if ($validator->fails()) {
+        $good = Good::find($id);
+
+        if ($good) 
+        {
+            $good->name = $request->input('name');
+            $good->category_id = $request->input('category_id');
+            $good->price = $request->input('price');
+            $good->description = $request->input('description');
+
+            if($request->hasFile('image'))
+            {
+                $file = $request->file('image');
+                $extension = $file->getClientOriginalExtension();
+                $filename = time() .'.'.$extension;
+                $file->move('uploads/good/', $filename);
+                $good->image = 'uploads/good/'.$filename;
+            }
+
+            $good->status = $request->input('status');
+            $good->approval = $request->input('approval');
+
+
+            $good->update();
+
             return response()->json([
-                'status'=>422,
-                'errors'=>$validator->messages(),
+                'status'=>200,
+                'message'=>'Update Goods Successfully',
             ]);
         }
         else 
         {
-            $good = Good::find($id);
-
-            if ($good) 
-            {
-                $good->name = $request->input('name');
-                $good->category_id = $request->input('category_id');
-                $good->price = $request->input('price');
-                $good->description = $request->input('description');
-                $good->status = $request->input('status');
-                $good->approval = $request->input('approval');
-
-
-                $good->update();
-
-                return response()->json([
-                    'status'=>200,
-                    'message'=>'Update Goods Successfully',
-                ]);
-            }
-            else 
-            {
-                return response()->json([
-                    'status'=>404,
-                    'message'=>'Not Found',
-                ]);
-            }
-
-            
+            return response()->json([
+                'status'=>404,
+                'message'=>'Not Found',
+            ]);
         }
     }
 

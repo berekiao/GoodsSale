@@ -17,7 +17,7 @@ class Good extends Model
         'image',
         'status',
         'approval',
-        'user_id'
+        'user_id' 
     ];
 
     protected $with = ['category', 'user'];
@@ -31,6 +31,16 @@ class Good extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class);
+    }
+
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'reportings', 'good_id', 'user_id');
     }
 
 }

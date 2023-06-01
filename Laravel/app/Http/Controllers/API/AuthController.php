@@ -16,6 +16,7 @@ class AuthController extends Controller
             'name'=>'required|max:191',
             'email'=>'required|email|max:191|unique:users,email',
             'password'=>'required|min:8',
+            'role_as'=>'nullable'
         ]);
 
         $user = User::create([
@@ -25,12 +26,9 @@ class AuthController extends Controller
             'role_as' =>$request->role_as,
         ]);
 
-        $token = $user->createToken($user->email.'_Token')->plainTextToken;
-
         return response()->json([
             'status'=>200,
             'username' =>$user->name,
-            'token' =>$token,
             'role' =>$user->role_as,
             'message' =>'Registered Successfully'
         ]);
@@ -60,10 +58,10 @@ class AuthController extends Controller
                 $token= $user->createToken($user->email.'_AdminToken', ['server:admin'])->plainTextToken;
                 
             } 
-            else if ($user->role_as == 1) //3- seller 
+            else if ($user->role_as == 1) //1- seller 
             {
                 $role = 'seller';
-                $token= $user->createToken($user->email.'_Token', [''])->plainTextToken;
+                $token= $user->createToken($user->email.'_AdminToken', ['server:admin'])->plainTextToken;
                 
             }
             else if ($user->role_as == 2) //2- moderator 
@@ -82,7 +80,7 @@ class AuthController extends Controller
                 'username' =>$user->name,
                 'token' =>$token,
                 'message' =>'Logged in Successfully',
-                'role' =>$role
+                'role' =>$role,
             ]);
         }
 

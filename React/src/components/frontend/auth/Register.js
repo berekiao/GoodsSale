@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../../assets/admin/js/login.css';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { useNavigate } from 'react-router-dom';
@@ -43,7 +44,7 @@ function Register() {
                     localStorage.setItem('auth_name', res.data.username);
                     
                         swal("Success",res.data.message,"success");
-                        navigate('/');
+                        navigate('/login');
                 }
                 else
                 {
@@ -55,46 +56,28 @@ function Register() {
 
     return (
         <div>
-            <div className="container py-5">
-                <div className="row justify-content-center">
-                    <div className="col-md-6">
-                        <div className="card">
-                            <div className="card-header">
-                                <h4>Register</h4>
-                            </div>
-                            <div className="card-body">
-                                <form onSubmit={registerSubmit}>
-                                    <div className="form-group mb-3">
-                                        <label>Full Name</label>
-                                        <input type="text" name="name" onChange={handleInput} value={registerInput.name} className="form-control" autoComplete="off"  />
-                                        <span>{registerInput.error_list.name}</span>
-                                    </div>
-                                    <div className="form-group mb-3">
-                                        <label>Email ID</label>
-                                        <input type="email" name="email" onChange={handleInput} value={registerInput.email} className="form-control" autoComplete="off" />
-                                        <span>{registerInput.error_list.email}</span>
-                                    </div>
-                                    <div className="form-group mb-3">
-                                        <label>Password</label>
-                                        <input type="password" name="password" onChange={handleInput} value={registerInput.password} className="form-control"  />
-                                        <span>{registerInput.error_list.password}</span>
-                                    </div>
 
-                                    <p>Click this box if you want to create an account as a seller</p>
-                                    <div className="form-check">
-                                        <label className="form-check-label" >Seller
-                                            <input type="checkbox" name='role_as' onChange={handleCheckbox} defaultChecked={allcheckbox.role_as === 1 ? true:false} className="form-check-input"/>
-                                        </label>
-                                    </div>
-                                    <div className="form-group mb-3">
-                                        <button type="submit" className="btn btn-primary">Register</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="login-container">
+                <h1>Register</h1>
+                <form onSubmit={registerSubmit} >
+                    <input type="text" name="name" onChange={handleInput} value={registerInput.name} autoComplete="off" placeholder="Full Name" required/>
+                    <span>{registerInput.error_list.name}</span>
+
+                    <input type="email" name="email" onChange={handleInput} value={registerInput.email} autoComplete="off" placeholder="Email" required/>
+                    <span>{registerInput.error_list.email}</span>
+
+                    <input type="password" name="password" onChange={handleInput} value={registerInput.password} placeholder="Mot de passe" required/>
+                    <span>{registerInput.error_list.password}</span>
+
+                    <label>
+                        Click this box if you want to create an account as a seller
+                        <input type="checkbox" name='role_as' onChange={handleCheckbox} defaultChecked={allcheckbox.role_as === 1 ? true:false} />
+                    </label>
+
+                    <button type="submit">Register</button>
+                </form>
             </div>
+
         </div>
     );
 }

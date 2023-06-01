@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('image')->nullable();
             $table->tinyInteger('status')->default('0');
+            $table->tinyInteger('approval')->default('0');
             $table->timestamps();
 
             $table->foreignId('user_id')->constrained();

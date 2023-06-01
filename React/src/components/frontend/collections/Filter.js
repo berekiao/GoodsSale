@@ -4,8 +4,8 @@ function Filter({ setActiveCategory, categories, activeCategory }){
 
 		<div>
 
-            <select className="form-select" value={activeCategory} onChange={(e) => setActiveCategory(e.target.value)} >
-                <option value=''>---</option>
+            <select value={activeCategory} onChange={(e) => setActiveCategory(e.target.value)} >
+                <option value=''>Select Category</option>
                 {categories.map((cat) => (
 					<option key={cat} value={cat}>
 						{cat}

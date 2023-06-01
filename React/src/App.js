@@ -1,8 +1,7 @@
 import React from "react";
 import {RouterProvider} from 'react-router-dom';
 import router from './routes/route';
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap/dist/js/bootstrap.bundle.js"
+
 
 import axios from "axios";
 

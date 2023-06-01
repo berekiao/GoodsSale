@@ -3,10 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -46,5 +46,28 @@ class User extends Authenticatable
     public function goods()
     {
         return $this->hasMany(Good::class, 'user_id');
+    }
+
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class);
+    }
+
+    public function conversations()
+    {
+        return Conversation::where(function ($q){
+            return $q->where('to', $this->id)
+            ->orWhere('from', $this->id);
+        });
+    }
+
+    public function getConversationsAttribute()
+    {
+        return $this->conversations()->get();
+    }
+
+    public function likedGoods()
+    {
+        return $this->belongsToMany(Good::class, 'reportings', 'user_id', 'good_id');
     }
 }

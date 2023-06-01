@@ -1,93 +1,129 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import swal from "sweetalert";
 
 const Sidebar = () => {
 
-    var AuthButtons = '';
-    if (localStorage.getItem('auth_token') && localStorage.getItem('auth_role') == 'admin') {
+    const navigate = useNavigate();
 
-        AuthButtons = (
+    const logoutSubmit = (e) => {
+        e.preventDefault();
 
-            <div className="nav">
-                <div className="sb-sidenav-menu-heading">Core</div>
-                <Link className="nav-link" to="/admin/dashboard">
-                    <div className="sb-nav-link-icon"><i className="fas fa-tachometer-alt"></i></div>
-                    Dashboard
-                </Link>
-            
-                <Link className="nav-link" to="/admin/profile">
-                    <div className="sb-nav-link-icon"><i className="fas fa-tachometer-alt"></i></div>
-                    Profile
-                </Link>
-                <div className="sb-sidenav-menu-heading">Interface</div>
-                <Link className="nav-link collapsed" to="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                    <div className="sb-nav-link-icon"><i className="fas fa-columns"></i></div>
-                    Category
-                    <div className="sb-sidenav-collapse-arrow"><i className="fas fa-angle-down"></i></div>
-                </Link>
-                <div className="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                    <nav className="sb-sidenav-menu-nested nav">
-                        <Link className="nav-link" to="/admin/add-category">Add Category</Link>
-                        <Link className="nav-link" to="/admin/view-category">Categories List</Link>
-                    </nav>
-                </div>
-
-                <Link className="nav-link collapsed" to="#" data-bs-toggle="collapse" data-bs-target="#layouts" aria-expanded="false" aria-controls="layouts">
-                    <div className="sb-nav-link-icon"><i className="fas fa-columns"></i></div>
-                    Moderator
-                    <div className="sb-sidenav-collapse-arrow"><i className="fas fa-angle-down"></i></div>
-                </Link>
-                <div className="collapse" id="layouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                    <nav className="sb-sidenav-menu-nested nav">
-                        <Link className="nav-link" to="/admin/add-moderator">Add Moderator</Link>
-                        <Link className="nav-link" to="/admin/view-moderator">Moderators List</Link>
-                    </nav>
-                </div>
-                    
-            </div>
-
-        )
-        
-    } 
-    else
-    {
-        AuthButtons = (
-
-            <div className="nav">
-                <div className="sb-sidenav-menu-heading">Core</div>
-
-                <Link className="nav-link" to="/admin/profile">
-                    <div className="sb-nav-link-icon"><i className="fas fa-tachometer-alt"></i></div>
-                    Profile
-                </Link>
-                <div className="sb-sidenav-menu-heading">Interface</div>
-                <Link className="nav-link collapsed" to="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                    <div className="sb-nav-link-icon"><i className="fas fa-columns"></i></div>
-                    Goods
-                    <div className="sb-sidenav-collapse-arrow"><i className="fas fa-angle-down"></i></div>
-                </Link>
-                <div className="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                    <nav className="sb-sidenav-menu-nested nav">
-                        <Link className="nav-link" to="/admin/list-goods">List of Goods</Link>
-                        <Link className="nav-link" to="#">Goods Signposted</Link>
-                    </nav>
-                </div>
-                
-                
-            </div>
-        )
+        axios.get('/sanctum/csrf-cookie').then(response => {
+            axios.post(`/api/logout`).then(res =>{
+                if (res.data.status === 200) 
+                {
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('auth_name');
+                    swal("Success",res.data.message,"success");
+                    navigate('/');    
+                }
+            })
+        })
     }
 
+    var AuthButtons = '';
+    if (localStorage.getItem('auth_token')) 
+    {
+        if (localStorage.getItem('auth_role') == 'admin') {
+
+            AuthButtons = (
+    
+                <ul className="sidebar-list">
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/dashboard" >
+                            <span className="material-icons-outlined">dashboard</span> Dashboard
+                        </Link>
+                    </li>
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/view-category" >
+                            <span className="material-icons-outlined">inventory_2</span> Category
+                        </Link>
+                    </li>
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/view-moderator" >
+                            <span className="material-icons-outlined">fact_check</span> Moderator
+                        </Link>
+                    </li>
+                </ul>
+    
+            )
+            
+        } 
+        else if(localStorage.getItem('auth_role') == 'moderator')
+        {
+            AuthButtons = (
+
+                <ul className="sidebar-list">
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/dashboardModerator" >
+                            <span className="material-icons-outlined">home</span> Dashboard
+                        </Link>
+                    </li>
+                    
+                </ul>
+            )
+        }
+        else if(localStorage.getItem('auth_role') == 'seller')
+        {
+            AuthButtons = (
+
+                <ul className="sidebar-list">
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/dashboardSeller" >
+                            <span className="material-icons-outlined">home</span> Dashboard
+                        </Link>
+                    </li>
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/dashboardSeller/views-goods" >
+                            <span className="material-icons-outlined">add_shopping_cart</span> Goods
+                        </Link>
+                    </li>
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/dashboardSeller/publish-goods" >
+                            <span className="material-icons-outlined">publish</span> Published goods
+                        </Link>
+                    </li>
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/list-proposal" >
+                            <span className="material-icons-outlined">visibility</span> Visit request
+                        </Link>
+                    </li>
+                    <li className="sidebar-list-item">
+                        <Link to="/admin/conversations" >
+                            <span className="material-icons-outlined">sms</span> Conversations
+                        </Link>
+                    </li>
+                </ul>
+            )
+        }
+    }
+    
+    
+    
+
+
     return(
-        <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-            <div className="sb-sidenav-menu">
-                {AuthButtons}
+        <div>
+
+            <div className="sidebar-title">
+                <div className="sidebar-brand">
+                    <span className="material-icons-outlined">inventory</span> GOODSALES
+                </div>
+                <span className="material-icons-outlined" onclick="closeSidebar()">close</span>
             </div>
-            <div className="sb-sidenav-footer">
-                <div className="small">Logged in as:</div>
-                Start Bootstrap
-            </div>
-        </nav>
+
+            {AuthButtons}
+            <ul className="sidebar-list">
+                <li className="sidebar-list-item">
+                    <Link onClick={logoutSubmit} to="#!" >
+                        <span class="material-icons-outlined">logout</span> Logout
+                    </Link>
+                </li>
+            </ul>
+            
+        </div>
     )
 }
 

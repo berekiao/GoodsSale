@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 import axios from "axios";
+
+
 function GoodDetails(){
 
-    const {name} = useParams();
+    const navigate = useNavigate();
+
+    const {id} = useParams();
     const [detail, setDetailList] = useState([]);
 
     useEffect(()=>{
 
 
-        axios.get(`/api/viewgooddetail/${name}`).then(res =>{
+        axios.get(`/api/viewgooddetail/${id}`).then(res =>{
             if (res.data.status === 200) 
             {
                 setDetailList(res.data.good);
@@ -17,46 +22,93 @@ function GoodDetails(){
             
         });
 
-    }, [name])
+    }, [id])
+
+    const [content, setContent] = useState('');
+
+    const handleChange = (event) => {
+        setContent(event.target.value);
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        
+        const data = {
+            content: content
+        }
+
+        axios.post(`/api/proposal/${id}`, data).then(res =>{
+            if (res.data.status === 200) 
+            {
+                swal("Success", res.data.message, "success")
+                navigate('/');
+            }
+            else if (res.data.status === 401) 
+            {
+                swal("Warning", res.data.message, "warning")
+                navigate('/');
+            }
+        })
+        
+      };
+    
 
     var Good = ''
+
+    if (localStorage.getItem('auth_token')){
+
+        Good = 
+        detail.map( (item)=> {
+            return (
+
+
+            <section className="prodetails" key={item.id}>
+                <div className="single-pro-image">
+                    <img src={`http://127.0.0.1:8000/${item.image}`} width="100%" id="MainImg" alt="" />
+                </div>
+                <div className="single-pro-details">
+                    <h6>{item.category.name}</h6>
+                    <h2>{item.name}</h2>
+                    <h4>{item.price}$</h4>
+                    <h3>Description</h3>
+                    <span>{item.description}</span>
+
+                    
+                    <p>Submit a visit request for this item here if you wish.</p>
+
+                    <form onSubmit={handleSubmit}>
+                        <textarea name="content" value={content} onChange={handleChange} />
+                        <button>Submit</button>
+                    </form>
+
+                </div>
+            </section>  
+        
+       ) })
+    } else
     {
         Good = 
         detail.map( (item)=> {
             return (
-            <div>
-            <div className="py-3 bg-warning">
-                <div className="container">
-                    <h6>Good / {item.category.name} / {item.name}</h6>
+
+
+            <section className="prodetails" key={item.id}>
+                <div className="single-pro-image">
+                    <img src={`http://127.0.0.1:8000/${item.image}`} width="100%" id="MainImg" alt="" />
                 </div>
-            </div>
+                <div className="single-pro-details">
+                    <h6>{item.category.name}</h6>
+                    <h2>{item.name}</h2>
+                    <h4>{item.price}$</h4>
+                    <h3>Description</h3>
+                    <span>{item.description}</span>
 
-            <div className="py-3">
-                <div className="container">
-                    <div className="row">
-
-                        <div className="col-md-4 border-end">
-                            <img   className="w-100" />
-                        </div>
-
-                        <div className="col-md-8">
-                            <h4>
-                                {item.name}
-                            </h4>
-                            <p> {item.description} </p>
-                            <h4 className="mb-1"> 
-                                Price: {item.price}$
-                                
-                            </h4>
-
-                            <button type="button" className="btn btn-danger mt-3">Request</button>
-                           
-                       </div>
-
-                    </div>
+                    
+                    <p>Please create an account or login in order to purchase this item</p>
+                    
                 </div>
-            </div>
-        </div>
+            </section>  
+        
        ) })
     }
 
@@ -65,7 +117,7 @@ function GoodDetails(){
 
         <div>
 
-            {Good}        
+            {Good}      
 
         </div>
 

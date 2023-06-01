@@ -37,28 +37,19 @@ const Category = () => {
     }
 
     return(
-        <div className="container-fluid px-4">
-            <h1 className="mt-4">Add Category</h1>
+        <div className="form" >
 
-            <form onSubmit={submitCategory} id="CATEGORY_FORM">
-                <ul className="nav nav-tabs" id="myTab" role="tablist">
-                    <li className="nav-item" role="presentation">
-                        <button className="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Add Category</button>
-                    </li>
-                </ul>
-                <div className="tab-content" id="myTabContent">
-                    <div className="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                        <div className="form-group mb-3">
-                            <label>Name</label>
-                            <input type="text" name="name" onChange={handleInput} value={categoryInput.name} className="form-control" autoComplete="off"/>
-                            <span className="text-danger">{categoryInput.error_list.name}</span>
-                        </div>
+            <h2>Add category</h2>
 
-                        <button type="submit" className="btn btn-primary px-4">Submit</button>
-                    </div>
-                    
-                </div>
+            <form onSubmit={submitCategory} id="CATEGORY_FORM">                    
+                <label>Name</label>
+                <input type="text" name="name" onChange={handleInput} value={categoryInput.name} autoComplete="off"/> <br/>
+                <span className="text-danger">{categoryInput.error_list.name}</span>
+
+                <button type="submit">Request</button>
+                        
             </form>
+
             
         </div>
     )

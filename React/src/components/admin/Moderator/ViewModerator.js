@@ -52,10 +52,10 @@ const ViewModerator = () => {
                     <td>{item.email}</td>
                     <td>{item.password}</td>
                     <td>{item.role_as}</td>
-                    <td>
+                    <td className="add-button">
                         <Link to={`/admin/edit-moderator/${item.id}`} className="btn btn-success btn-sm">Edit</Link>
                     </td>
-                    <td>
+                    <td >
                         <button type="button" onClick={(e) => deleteModerator(e, item.id)} className="btn btn-danger btn-sm">Delete</button>
                     </td>
                 </tr>
@@ -65,15 +65,19 @@ const ViewModerator = () => {
     }   
 
     return(
-        <div className="container px-4">
-            <div className="card">
-                <div className="card-header">
-                    <h4>Moderator List
+        <div >
+            <div >
+                
+                <div className="main-title">
+                    <p className="font-weight-bold">MODERATOR</p>
+                </div> <br/>
+                <div className="add-button">
+                    <h4>
                         <Link to='/admin/add-moderator' className="btn btn-primary btn-sm float-end">Add Moderator</Link>
                     </h4>
                 </div>
-                <div className="card-body">
-                    <table className="table table-bordered table-striped">
+                <div>
+                    <table>
                         <thead>
                             <tr>
                                 <th>ID</th>

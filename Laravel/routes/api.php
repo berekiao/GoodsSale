@@ -3,9 +3,11 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ModeratorController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\GoodController;
-use App\Models\Category;
+use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\ReportingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +26,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::get('getGood', [FrontendController::class, 'good']);
-Route::get('viewgooddetail/{name}', [FrontendController::class, 'viewgood']);
+Route::get('viewgooddetail/{id}', [FrontendController::class, 'viewgood']);
 
 Route::middleware(['auth:sanctum', 'isAPIAdmin'])->group(function () {
 
@@ -60,6 +62,33 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('edit-good/{id}', [GoodController::class, 'edit']);
     Route::post('update-good/{id}', [GoodController::class, 'update']);
     Route::delete('delete-good/{id}', [GoodController::class, 'destroy']);
+    Route::get('publish-good', [FrontendController::class, 'publish']);
+
+    Route::get('list-seller', [FrontendController::class, 'seller']);
+    Route::get('list-request', [FrontendController::class, 'request']);
+
+    Route::get('viewProposal', [ProposalController::class, 'index']);
+    Route::get('listProposal', [ProposalController::class, 'listproposal']);
+
+    Route::get('confirmProposal/{id}', [ConversationController::class, 'confirm']);
+    Route::get('conversations', [ConversationController::class, 'index']);
+    Route::get('conversations/{id}', [ConversationController::class, 'show']);
+    Route::post('sendMessage/{id}', [ConversationController::class, 'sendMessage']);
+
+    Route::delete('unlikeGood/{id}', [ReportingController::class, 'unlike']);
+    Route::get('like', [ReportingController::class, 'index']);
+
+});
 
 
+Route::middleware(['auth:sanctum', 'proposal'])->group(function () {
+    
+    Route::post('proposal/{id}', [ProposalController::class, 'submitStore']);
+    
+});
+
+Route::middleware(['auth:sanctum', 'likeGood'])->group(function () {
+    
+    Route::post('good/{id}', [ReportingController::class, 'like']);
+    
 });

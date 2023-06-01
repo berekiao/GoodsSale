@@ -6,7 +6,6 @@ import {Outlet, Navigate, useNavigate} from "react-router-dom";
 
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
-import Footer from './Footer'
 
 import axios from 'axios';
 import swal from 'sweetalert';
@@ -68,23 +67,16 @@ const MasterLayout = () => {
     }
 
     return(
-        <div className="sb-nav-fixed">
-            <Navbar />
+        <div className="grid-container">
+            
 
-            <div id="layoutSidenav">
+            <aside id="sidebar">
+                <Sidebar/>
+            </aside>
 
-                <div id="layoutSidenav_nav">
-                    <Sidebar />
-                </div>
-
-                <div id="layoutSidenav_content">
-                    <main>
-                        <Outlet />
-                    </main>
-                    <Footer />
-                </div>
-
-            </div>
+            <main className="main-container">
+                <Outlet />
+            </main>
         </div>
     )
 }

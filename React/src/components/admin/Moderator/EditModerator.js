@@ -62,49 +62,42 @@ function EditModerator(props)
         
 
     return(
-        <div className="container px-4">
-            <div className="card mt-4">
+        <div >
+            <div >
                 <div className="card-header">
-                    <h4>Edit Moderator 
-                        <Link to="/admin/view-moderator" className="btn btn-primary btn-sm float-end">BACK</Link>
-                    </h4>
+                    <h2>Edit Moderator </h2>
                 </div>
-                <div className="card-body">
+
+                <div className="form">
 
                     <form onSubmit={updateModerator}>
-                        <ul className="nav nav-tabs" id="myTab" role="tablist">
-                            <li className="nav-item" role="presentation">
-                                <button className="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Update</button>
-                            </li>
-                        </ul>
                         <div className="tab-content" id="myTabContent">
-                            <div className="tab-pane card-body border fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-
-                                <div className="form-group mb-3">
-                                    <label>Name</label>
-                                    <input type="text" name="name" onChange={handleInput} value={moderatorInput.name} className="form-control" />
-                                    <small className="text-danger">{error.name}</small>
-                                </div>
-                                <div className="form-group mb-3">
-                                    <label>Email</label>
-                                    <input type="text" name="email" onChange={handleInput} value={moderatorInput.email} className="form-control" />
-                                    <small className="text-danger">{error.email}</small>
-                                </div>
-                                <div className="form-group mb-3">
-                                    <label>Password</label>
-                                    <input type="password" name="password" onChange={handleInput} value={moderatorInput.password} className="form-control" />
-                                    <small className="text-danger">{error.password}</small>
-                                </div>
-                                <div className="form-group mb-3">
-                                    <label>Role</label>
-                                    <input type="text" name="name" onChange={handleInput} value={moderatorInput.role_as} className="form-control" />
-                                    <span className="text-success">Buyer = 0, Sellers = 1, Moderator = 2</span>   
-                                    <small className="text-danger">{error.role_as}</small>
-                                </div>
-                                
-                                <button type="submit" className="btn btn-primary">Update</button>
-
+                            
+                            <div className="form-group mb-3">
+                                <label>Name</label>
+                                <input type="text" name="name" onChange={handleInput} value={moderatorInput.name} />
+                                <small className="text-danger">{error.name}</small>
                             </div>
+                            <div className="form-group mb-3">
+                                <label>Email</label>
+                                <input type="text" name="email" onChange={handleInput} value={moderatorInput.email} />
+                                <small className="text-danger">{error.email}</small>
+                            </div>
+                            <div className="form-group mb-3">
+                                <label>Password</label>
+                                <input type="password" name="password" onChange={handleInput} value={moderatorInput.password} />
+                                <small className="text-danger">{error.password}</small>
+                            </div>
+                            <div className="form-group mb-3">
+                                <label>Role</label>
+                                <input type="text" name="name" onChange={handleInput} value={moderatorInput.role_as} />
+                                <span className="text-success">Buyer = 0, Sellers = 1, Moderator = 2</span>   
+                                <small className="text-danger">{error.role_as}</small>
+                            </div>
+                            
+                            <button type="submit" className="btn btn-primary">Update</button>
+
+                            
                         </div>
                     </form>
 

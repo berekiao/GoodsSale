@@ -1,39 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import Dropzone from "react-dropzone";
 import axios from "axios";
 import swal from "sweetalert";
 
-function UpdateGoods() {
+function EditGoods() {
 
     let {id} = useParams();
     const navigate = useNavigate();
 
-    const [categoryList, setCategoryList] = useState([]);
-    const [goodInput, setGood] = useState({
-        name: '',
-        category_id: '',
-        price: '',
-        description: ''
-    });
+    const [name, setName] = useState("");
+    const [category_id, setCategory] = useState("");
+    const [price, setPrice] = useState("");
+    const [description, setDescription] = useState("");
+    const [image, setImage] = useState(null);
+    const [status, setStatus] = useState('');
+    const [approval, setApproval] = useState('');
 
-    const [pricture, setPicture] = useState([]);
+    const [categoryList, setCategoryList] = useState([]);
     const [errorlist, setError] = useState([]);
 
-    const handleInput = (e) => {
-        e.persist();    
-        setGood({ ...goodInput, [e.target.name]: e.target.value });
-    };
+    
 
-    const [allcheckbox, setCheckboxes] = useState([])
-    const handleCheckbox = (e) => {
-        e.persist();
-        setCheckboxes({...allcheckbox, [e.target.name]: e.target.checked });
-
-    }
-
-    const handleImage = (e) => {
-        setPicture({ image: e.target.files[0] });
-    }
 
 
     useEffect( () => {
@@ -51,117 +39,123 @@ function UpdateGoods() {
            
             if(res.data.status === 200)
             {
-                setGood(res.data.good);
-                setCheckboxes(res.data.good);
+                const { name, description, price, status, approval } = res.data.good;
+                setName(name);
+                setCategory(category_id);
+                setDescription(description);
+                setPrice(price);
+                setStatus(status);
+                setApproval(approval);
             }
-            else if (res.data.status === 404) 
-            {
-                swal("Error", res.data.message, "error");
-                navigate('/dashboardSeller/view-goods')
-            }
+            
             
         });
         
 
-    }, [id, navigate]);
+    }, [id]);
 
-    const updateGood = (e) => {
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        setImage(file);
+    };
+
+    const handleCheckboxChange = () => {
+        setStatus(!status);
+    };
+
+    const handleCheckboxChangeApproval = () => {
+        setApproval(!approval);
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
-        
-        formData.append('image', pricture.image);
-        formData.append('name', goodInput.name);
-        formData.append('category_id', goodInput.category_id);
-        formData.append('price', goodInput.price);
-        formData.append('description', goodInput.description);
-        formData.append('status', allcheckbox.status ? '1':'0');
-        formData.append('approval', allcheckbox.approval ? '1':'0');
 
-        axios.post(`/api/update-good/${id}`, formData).then(res => {
-            if (res.data.status === 200) {
+        formData.append("name", name);
+        formData.append("category_id", category_id);
+        formData.append("price", price);
+        formData.append("description", description);
+        formData.append("image", image);
+        formData.append("status", status ? 1:0);
+        formData.append("approval", approval ? 1:0);
+
+        axios.post(`/api/update-good/${id}`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }).then(res=>{
+            if (res.data.status === 200) 
+            {
                 swal("Success", res.data.message, "success");
-                setError([]);
-            }
-            else if (res.data.status === 422) {
+            } 
+            else if (res.data.status === 422) 
+            {
                 
                 setError(res.data.errors);
             }
-        });
-    };
+        });;
+          
+      };
 
+    if (localStorage.getItem('auth_role') == 'moderator') {
 
     return (
-        <div className="container-fluid px-4">
-            <div className="card mt-4">
-                <div className="card-header">
-                    <h4>Update Goods
-                        <Link to="/admin/list-goods" className='btn btn-primary btn-sm float-end'>BACK</Link>
-                    </h4>
-                </div>
-                <div className="card-body">
+        <div className="form">
+            <h2>Update good</h2>    
 
-                    <form onSubmit={updateGood} encType="multipart/form-data">
-                        <div className="form-group mb-3">
-                            <label>Name</label>
-                            <input type="text" name="name" onChange={handleInput} value={goodInput.name} className="form-control" />
-                            <small className="text-danger">{errorlist.name}</small>
-                        </div>
+            <form onSubmit={handleSubmit}>
 
-                        <div className="form-group mb-3">
-                            <label>Category</label>
-                            <select name="category_id" onChange={handleInput} value={goodInput.category_id} className="form-control">
-                                <option>Selected Category</option>
+                <label>Name</label>
+                <input type="text" name="name" onChange={(e) => setName(e.target.value)} value={name} />
+                <small className="text-danger">{errorlist.name}</small>
 
-                                {categoryList.map((item) => {
-                                    return (
-                                        <option value={item.id} key={item.id}>{item.name}</option>
-                                    );
-                                })}
+                <label>Category</label>
+                <select name="category_id" onChange={(e) => setCategory(e.target.value)} value={category_id} >
+                    <option>Selected Category</option>
 
-                            </select>
-                            <small className="text-danger">{errorlist.category_id}</small>
-                        </div>
+                    {categoryList.map((item) => {
+                        return (
+                            <option value={item.id} key={item.id}>{item.name}</option>
+                        );
+                    })}
 
-                        <div className="form-group mb-3">
-                            <label>Price</label>
-                            <input type="text" onChange={handleInput} value={goodInput.price} name="price" className="form-control" />
-                            <small className="text-danger">{errorlist.price}</small>
-                        </div>
+                </select>
+                <small className="text-danger">{errorlist.category_id}</small>
 
-                        <div className="form-group mb-3">
-                            <label>Description</label>
-                            <textarea name="description" onChange={handleInput} value={goodInput.description} className="form-control" />
-                            <small className="text-danger">{errorlist.description}</small>
-                        </div>
+                <label>Price</label>
+                <input type="text" onChange={(e) => setPrice(e.target.value)} value={price} name="price"  />
+                <small className="text-danger">{errorlist.price}</small>
 
-                        <div className="form-group mb-3">
-                            <label>Image</label>
-                            <input type="file" name="image" onChange={handleImage} className="form-control" />
-                            <small className="text-danger">{errorlist.image}</small>
-                        </div>
+                <label>Description</label>
+                <textarea name="description" onChange={(e) => setDescription(e.target.value)} value={description}  />
+                <small className="text-danger">{errorlist.description}</small>
 
-                        <div className="col-md-4 form-group mb-3">
-                            <label>Posted (check=publish, uncheck=unpublish)</label>
-                            <input type="checkbox" name="status" onChange={handleCheckbox} defaultChecked={allcheckbox.status === 1 ? true:false}  className="form-check-input" />
-                        </div>
+                <label>Image:</label>
+                <input type="file" accept="image/*" onChange={handleImageUpload} />
+                <small className="text-danger">{errorlist.image}</small>
+                
+                <label>Status || check = permission granted // uncheck = permission denied  </label>
+                <input type="checkbox" checked={status} onChange={handleCheckboxChange} />
+                
 
-                        <div className="col-md-4 form-group mb-3">
-                            <label>Validation (check=reject, uncheck=validate)</label>
-                            <input type="checkbox" name='approval' onChange={handleCheckbox} defaultChecked={allcheckbox.approval === 1 ? true:false} className="form-check-input"/>
-
-                        </div>
-                            
-                        
-                        <button type="submit" className="btn btn-primary">Request</button>
-                        
-                    </form>
-                </div>
-            </div>
-
+                <label>Approval || check = approval denied // uncheck = permission granted</label>
+                <input type="checkbox" checked={approval} onChange={handleCheckboxChangeApproval} />
+                
+                
+                
+                <button type="submit">Update</button>
+                
+            </form>
 
         </div>
     );
+    } 
+    return(
+        <div>
+            You do not have permissions for this page
+        </div>
+    )
 }
 
-export default UpdateGoods
+export default EditGoods
